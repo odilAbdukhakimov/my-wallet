@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TransactionRequestDto {
     private double amount;
-    private UUID userId;
+//    private UUID userId;
     private UUID categoryId;
 }

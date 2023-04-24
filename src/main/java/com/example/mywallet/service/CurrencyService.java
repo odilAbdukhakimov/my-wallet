@@ -63,4 +63,12 @@ public class CurrencyService {
     private CurrencyEntity getById(int id) {
         return currencyRepository.findById(id).orElseThrow(() -> new RecordNotFound("Currency not found"));
     }
+
+    public ApiResponse getAllCurrencies() {
+        return new ApiResponse(
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                currencyRepository.findAll()
+        );
+    }
 }

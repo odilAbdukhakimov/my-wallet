@@ -8,5 +8,5 @@ import java.util.UUID;
 public class NoteRequestDto {
     private String theme;
     private String title;
-    private UUID userId;
+//    private UUID userId;
 }

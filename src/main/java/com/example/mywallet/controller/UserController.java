@@ -2,18 +2,20 @@ package com.example.mywallet.controller;
 
 import com.example.mywallet.dto.request.UserUpdateRequestDto;
 import com.example.mywallet.dto.response.ApiResponse;
+import com.example.mywallet.entity.UserEntity;
 import com.example.mywallet.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user/")
+@SecurityRequirement(name = "My walled")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -23,13 +25,14 @@ public class UserController {
 //        return userService.getById(id);
 //    }
 
-    @PostMapping(value = "upload-img/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse uploadPhoto(@PathVariable UUID id, @RequestPart("file") MultipartFile file) {
-        return userService.uploadPhoto(id, file);
+    @PostMapping(value = "upload-img", consumes = MediaType.IMAGE_JPEG_VALUE)
+    public ApiResponse uploadPhoto(@RequestPart("file") MultipartFile file, HttpServletRequest request) {
+        return userService.uploadPhoto(request, file);
     }
 
-    @PutMapping("update/{id}")
-    public ApiResponse updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequestDto dto) {
-        return userService.edit(id, dto);
+    @PutMapping("update")
+    public ApiResponse updateUser(@RequestBody UserUpdateRequestDto dto, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return userService.edit(user, dto);
     }
 }

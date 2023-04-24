@@ -29,10 +29,10 @@ public class TransactionService {
     private final CategoryRepository categoryRepository;
     private final FileService fileService;
 
-    public ApiResponse create(TransactionRequestDto dto) {
+    public ApiResponse create(TransactionRequestDto dto, UserEntity user) {
         TransactionEntity of = TransactionEntity.of(dto);
-        UserEntity user = userRepository.findById(dto.getUserId()).orElseThrow(() ->
-                new RecordNotFound("User not found"));
+//        UserEntity user = userRepository.findById(dto.getUserId()).orElseThrow(() ->
+//                new RecordNotFound("User not found"));
         CategoryEntity category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(() ->
                 new RecordNotFound("Category not found"));
         double balance = user.getMyBalance().getBalance();
@@ -65,7 +65,7 @@ public class TransactionService {
         List<TransactionEntity> byCategoryId = transactionRepository.findByCategory_IdAndUserEntity_Id(categoryId, userId);
         List<TransactionResponseDto> list = byCategoryId.stream().map(TransactionResponseDto::from).toList();
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getTransactionOnToday(String type, UUID userId) {
@@ -82,7 +82,7 @@ public class TransactionService {
             list = list.stream().filter((t) ->
                     t.getTransactionType().equals(CategoryTypeEnum.UNKNOWN.name())).toList();
         }
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getTransactionOnWeekly(String type, UUID userId) {
@@ -90,7 +90,7 @@ public class TransactionService {
         LocalDate startDay = now.minusDays(7);
         List<TransactionResponseDto> list = getTransactionListByDate(startDay, now, type, userId);
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getTransactionOnMonthly(String type, UUID userId) {
@@ -98,7 +98,7 @@ public class TransactionService {
         LocalDate startDay = now.minusMonths(1);
         List<TransactionResponseDto> list = getTransactionListByDate(startDay, now, type, userId);
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getTransactionOnYearly(String type, UUID userId) {
@@ -106,13 +106,13 @@ public class TransactionService {
         LocalDate startDay = now.minusMonths(12);
         List<TransactionResponseDto> list = getTransactionListByDate(startDay, now, type, userId);
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getTransactionListByAnyDate(LocalDate startDate, LocalDate endDate, String type, UUID userId) {
         List<TransactionResponseDto> list = getTransactionListByDate(startDate, endDate, type, userId);
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     public ApiResponse getAllTransactionsByType(String type, UUID userId) {
@@ -121,7 +121,7 @@ public class TransactionService {
                 (t) -> type.equalsIgnoreCase(t.getTransactionType())
         ).toList();
         String fileUrl = fileService.writeExcelFile(list);
-        return getApiResponse(list,fileUrl);
+        return getApiResponse(list, fileUrl);
     }
 
     private List<TransactionResponseDto> getTransactionListByDate(LocalDate startDate, LocalDate endDate, String type, UUID userId) {
@@ -140,7 +140,7 @@ public class TransactionService {
         return list;
     }
 
-    private ApiResponse getApiResponse(List<TransactionResponseDto> list,String fileUrl) {
+    private ApiResponse getApiResponse(List<TransactionResponseDto> list, String fileUrl) {
         int count = list.size();
         double amount = list.stream().parallel()
                 .mapToDouble(dto -> {
@@ -153,7 +153,7 @@ public class TransactionService {
                     }
                 })
                 .sum();
-        TransactionStatisticDto transactionStatisticDto = new TransactionStatisticDto(list, count, amount,fileUrl);
+        TransactionStatisticDto transactionStatisticDto = new TransactionStatisticDto(list, count, amount, fileUrl);
         return new ApiResponse(
                 HttpStatus.OK.value(),
                 HttpStatus.OK.name(),

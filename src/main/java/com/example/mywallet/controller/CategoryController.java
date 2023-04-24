@@ -3,7 +3,9 @@ package com.example.mywallet.controller;
 import com.example.mywallet.dto.request.CategoryRequestDto;
 import com.example.mywallet.dto.response.ApiResponse;
 import com.example.mywallet.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/category/")
+@SecurityRequirement(name = "My walled")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
@@ -20,8 +23,8 @@ public class CategoryController {
         return categoryService.add(categoryRequestDto);
     }
 
-    @PostMapping("upload-img/{id}")
-    public ApiResponse uploadPhoto(@PathVariable UUID id, MultipartFile file) {
+    @PostMapping(value = "upload-img/{id}", consumes = MediaType.IMAGE_JPEG_VALUE)
+    public ApiResponse uploadPhoto(@PathVariable UUID id, @RequestPart("file") MultipartFile file) {
         return categoryService.uploadImage(id, file);
     }
 

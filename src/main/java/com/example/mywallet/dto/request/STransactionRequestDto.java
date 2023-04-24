@@ -9,6 +9,6 @@ import java.util.UUID;
 public class STransactionRequestDto {
     private double amount;
     private LocalDate planDate;
-    private UUID userId;
+//    private UUID userId;
     private UUID categoryId;
 }

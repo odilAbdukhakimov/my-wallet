@@ -22,10 +22,10 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
 
-    public ApiResponse create(NoteRequestDto requestDto) {
+    public ApiResponse create(NoteRequestDto requestDto, UserEntity user) {
         NoteEntity note = NoteEntity.of(requestDto);
-        UserEntity user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
-                new RecordNotFound("User not found"));
+//        UserEntity user = userRepository.findById(requestDto.getUserId()).orElseThrow(() ->
+//                new RecordNotFound("User not found"));
         note.setUserEntity(user);
         NoteEntity save = noteRepository.save(note);
         return new ApiResponse(
@@ -64,9 +64,9 @@ public class NoteService {
         );
     }
 
-    public ApiResponse getAllNotesOfUser(UUID userId) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(() ->
-                new RecordNotFound("User not found"));
+    public ApiResponse getAllNotesOfUser(UserEntity user) {
+//        UserEntity user = userRepository.findById(userId).orElseThrow(() ->
+//                new RecordNotFound("User not found"));
         List<NoteEntity> myNotes = user.getMyNotes();
         List<NoteResponseDto> list = myNotes.stream().map(NoteResponseDto::from).toList();
         return new ApiResponse(

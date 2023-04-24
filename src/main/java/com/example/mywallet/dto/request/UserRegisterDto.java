@@ -1,10 +1,11 @@
 package com.example.mywallet.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UserRegisterDto {
-
     private String name;
     private String username;
     private String password;

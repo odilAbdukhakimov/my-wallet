@@ -4,6 +4,7 @@ import com.example.mywallet.service.ImageService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +21,8 @@ public class ImageController {
 
     @SneakyThrows
     @GetMapping("{name}")
-    public void getPhoto(@PathVariable String name, HttpServletResponse response) {
-        imageService.getPicture(name, response.getOutputStream());
+    public HttpEntity<byte[]> getPhoto(@PathVariable String name) {
+        return imageService.getPicture(name);
     }
 //    @SneakyThrows
 //    @PutMapping("{name}")

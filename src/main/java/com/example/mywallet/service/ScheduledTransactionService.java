@@ -7,7 +7,6 @@ import com.example.mywallet.dto.response.STransactionResponseDto;
 import com.example.mywallet.dto.response.TransactionResponseDto;
 import com.example.mywallet.entity.CategoryEntity;
 import com.example.mywallet.entity.ScheduledTransactionEntity;
-import com.example.mywallet.entity.TransactionEntity;
 import com.example.mywallet.entity.UserEntity;
 import com.example.mywallet.entity.enums.TransactionStatusEnum;
 import com.example.mywallet.exception.RecordNotFound;
@@ -32,8 +31,9 @@ public class ScheduledTransactionService {
     private final CategoryRepository categoryRepository;
     private final TransactionService transactionService;
 
-    public ApiResponse create(STransactionRequestDto requestDto) {
+    public ApiResponse create(STransactionRequestDto requestDto, UUID userId) {
         ScheduledTransactionEntity of = ScheduledTransactionEntity.of(requestDto);
+        of.setUserId(userId);
         ScheduledTransactionEntity save = sTransactionRepository.save(of);
         STransactionResponseDto response = getResponse(save);
         return new ApiResponse(
@@ -89,8 +89,9 @@ public class ScheduledTransactionService {
         List<ScheduledTransactionEntity> list = byPlanDate.stream().filter((sT) ->
                 sT.getStatus().equals(TransactionStatusEnum.IN_PROGRESS)).toList();
         list.forEach(t -> {
-            TransactionRequestDto requestDto = new TransactionRequestDto(t.getAmount(), t.getUserId(), t.getCategoryId());
-            ApiResponse apiResponse = transactionService.create(requestDto);
+            TransactionRequestDto requestDto = new TransactionRequestDto(t.getAmount(), t.getCategoryId());
+            UserEntity user = userRepository.findById(t.getUserId()).orElseThrow(() -> new RecordNotFound("User not found"));
+            ApiResponse apiResponse = transactionService.create(requestDto, user);
             TransactionResponseDto data = (TransactionResponseDto) apiResponse.getData();
             t.setStatus(data.getStatus());
             sTransactionRepository.save(t);

@@ -5,14 +5,18 @@ import com.example.mywallet.exception.RecordNotFound;
 import com.example.mywallet.repository.AttachmentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +40,7 @@ public class ImageService {
             attachment.setContentType(contentType);
             attachment.setFileOriginalName(originalFileName);
 
-            String randomName = makeRandomFileName(originalFileName);
+            String randomName = makeRandomFileName(Objects.requireNonNull(originalFileName));
 
             attachment.setName(randomName);
             attachmentRepository.save(attachment);
@@ -63,7 +67,7 @@ public class ImageService {
         if (name != null) {
             Optional<AttachmentEntity> foundByName = attachmentRepository.findByName(name);
             if (foundByName.isPresent()) {
-                String randomName = makeRandomFileName(file.getOriginalFilename());
+                String randomName = makeRandomFileName(Objects.requireNonNull(file.getOriginalFilename()));
                 writeToFile(file, randomName);
 
                 AttachmentEntity attachmentEntity = foundByName.get();
@@ -87,17 +91,24 @@ public class ImageService {
         return "";
     }
 
-    public void getPicture(String name, OutputStream outputStream) {
+    public HttpEntity<byte[]> getPicture(String name) {
         Optional<AttachmentEntity> optionalAttachment = attachmentRepository.findByName(name);
         if (optionalAttachment.isPresent()) {
             AttachmentEntity attachment = optionalAttachment.get();
             try {
                 FileInputStream fileInputStream = new FileInputStream(PATH_FILE + "/" + attachment.getName());
-                FileCopyUtils.copy(fileInputStream, outputStream);
+                byte[] image = new InputStreamResource(fileInputStream).getContentAsByteArray();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_JPEG);
+                headers.setContentLength(image.length);
+                return new HttpEntity<>(image, headers);
+//                FileCopyUtils.copy(fileInputStream, outputStream);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+        return null;
     }
 }
 

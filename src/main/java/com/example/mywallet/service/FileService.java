@@ -1,6 +1,5 @@
 package com.example.mywallet.service;
 
-import com.example.mywallet.dto.response.ApiResponse;
 import com.example.mywallet.dto.response.TransactionResponseDto;
 import com.example.mywallet.entity.enums.CategoryTypeEnum;
 import com.example.mywallet.entity.enums.TransactionStatusEnum;
@@ -13,12 +12,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 @Service
@@ -51,8 +48,6 @@ public class FileService {
         List<TransactionResponseDto> list3 = list.stream().filter((t) -> t.getTransactionType().equals(CategoryTypeEnum.UNKNOWN.name())).toList();
         writeRow(list3, sheet3, style);
 
-//        File currDir = new File(PATH);
-//        String path = currDir.getAbsolutePath();
         String fileName = list.get(0).getName() + ".xlsx";
         String fileLocation = PATH + fileName;
 

@@ -2,7 +2,11 @@ package com.example.mywallet.controller;
 
 import com.example.mywallet.dto.request.TransactionRequestDto;
 import com.example.mywallet.dto.response.ApiResponse;
+import com.example.mywallet.entity.UserEntity;
 import com.example.mywallet.service.TransactionService;
+import com.example.mywallet.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,52 +15,62 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transaction/")
+@SecurityRequirement(name = "My walled")
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;
+    private final UserService userService;
 
     @PostMapping("balance")
-    public ApiResponse myBalance(@RequestBody TransactionRequestDto requestDto) {
-        return transactionService.create(requestDto);
+    public ApiResponse myBalance(@RequestBody TransactionRequestDto requestDto, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.create(requestDto,user);
     }
 
-    @GetMapping("{userId}/{categoryId}")
-    public ApiResponse getTransactionByCategory(@PathVariable UUID userId, @PathVariable UUID categoryId) {
-        return transactionService.getTransactionByCategory(categoryId, userId);
+    @GetMapping("{categoryId}")
+    public ApiResponse getTransactionByCategory(@PathVariable UUID categoryId, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionByCategory(categoryId, user.getId());
     }
 
-    @GetMapping("today/{userId}/{type}")
-    public ApiResponse getTransactionOnToday(@PathVariable UUID userId, @PathVariable String type) {
-        return transactionService.getTransactionOnToday(type, userId);
+    @GetMapping("today/{type}")
+    public ApiResponse getTransactionOnToday(@PathVariable String type, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionOnToday(type, user.getId());
     }
 
-    @GetMapping("week/{userId}/{type}")
-    public ApiResponse getTransactionWeekly(@PathVariable UUID userId, @PathVariable String type) {
-        return transactionService.getTransactionOnWeekly(type, userId);
+    @GetMapping("week/{type}")
+    public ApiResponse getTransactionWeekly(@PathVariable String type, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionOnWeekly(type, user.getId());
     }
 
-    @GetMapping("month/{userId}/{type}")
-    public ApiResponse getTransactionMonthly(@PathVariable UUID userId, @PathVariable String type) {
-        return transactionService.getTransactionOnMonthly(type, userId);
+    @GetMapping("month/{type}")
+    public ApiResponse getTransactionMonthly(@PathVariable String type, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionOnMonthly(type, user.getId());
     }
 
-    @GetMapping("year/{userId}/{type}")
-    public ApiResponse getTransactionYearly(@PathVariable UUID userId, @PathVariable String type) {
-        return transactionService.getTransactionOnYearly(type, userId);
+    @GetMapping("year/{type}")
+    public ApiResponse getTransactionYearly(@PathVariable String type, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionOnYearly(type, user.getId());
     }
 
-    @GetMapping("any/{userId}/{statDate}/{endDate}/{type}")
+    @GetMapping("any/{statDate}/{endDate}/{type}")
     public ApiResponse getTransactionAnyDate(
-            @PathVariable UUID userId,
             @PathVariable LocalDate statDate,
             @PathVariable LocalDate endDate,
-            @PathVariable String type
+            @PathVariable String type,
+            HttpServletRequest request
     ) {
-        return transactionService.getTransactionListByAnyDate(statDate, endDate, type, userId);
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getTransactionListByAnyDate(statDate, endDate, type, user.getId());
     }
 
-    @GetMapping("list/{userId}/{type}")
-    public ApiResponse getAllTransactionsByType(@PathVariable UUID userId, @PathVariable String type) {
-        return transactionService.getAllTransactionsByType(type, userId);
+    @GetMapping("list/{type}")
+    public ApiResponse getAllTransactionsByType(@PathVariable String type, HttpServletRequest request) {
+        UserEntity user = userService.getUserByAccessToken(request);
+        return transactionService.getAllTransactionsByType(type, user.getId());
     }
 }

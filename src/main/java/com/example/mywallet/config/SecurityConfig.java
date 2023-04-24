@@ -23,7 +23,8 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     private final String[] WHITE_LIST = new String[]{
-            "/**",
+            "/*",
+            "/api/file/*",
             "/api/auth/**",
             "/api-docs/**",
             "/swagger-ui/**"

@@ -3,6 +3,7 @@ package com.example.mywallet.entity;
 import com.example.mywallet.entity.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 public class UserEntity extends BaseEntity implements UserDetails {
     private String name;
+    @Column(unique = true)
+    @NotBlank(message = "Username cannot be null or whitespace")
     private String username;
+    @NotBlank(message = "Password cannot be null or whitespace")
     private String password;
     private String photoUrl;
     @OneToOne

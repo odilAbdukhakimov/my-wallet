@@ -29,7 +29,6 @@ public class ScheduledTransactionEntity extends BaseEntity {
                 .status(TransactionStatusEnum.IN_PROGRESS)
                 .createdDate(LocalDate.now())
                 .planDate(dto.getPlanDate())
-                .userId(dto.getUserId())
                 .categoryId(dto.getCategoryId())
                 .build();
     }
