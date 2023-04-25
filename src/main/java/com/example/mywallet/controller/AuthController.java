@@ -5,6 +5,7 @@ import com.example.mywallet.dto.request.UsernamePasswordRequestDto;
 import com.example.mywallet.dto.response.ApiResponse;
 import com.example.mywallet.service.AuthService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +22,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("register")
-    public ApiResponse register(@RequestBody UserRegisterDto userRegisterDto){
+    public ApiResponse register(@RequestBody @Valid UserRegisterDto userRegisterDto){
         return authService.register(userRegisterDto);
     }
     @PostMapping("login")
-    public ApiResponse login(@RequestBody UsernamePasswordRequestDto usernamePasswordRequestDto) throws JsonProcessingException {
+    public ApiResponse login(@RequestBody @Valid UsernamePasswordRequestDto usernamePasswordRequestDto) throws JsonProcessingException {
         return authService.login(usernamePasswordRequestDto);
     }
 

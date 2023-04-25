@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +31,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
     private final UserRepository userRepository;
     private final CurrencyRepository currencyRepository;
     private final BalanceRepository balanceRepository;
@@ -101,8 +102,17 @@ public class AuthService implements UserDetailsService {
         return null;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        final UserEntity user = userRepository.findByUsername(username).orElseThrow(() ->
+//                new RecordNotFound("User not found"));
+//        boolean accountNonExpired = user.isAccountNonExpired();
+//        if (accountNonExpired) {
+//            return User.withUsername(user.getUsername())
+//                    .password(user.getPassword())
+//                    .disabled(user.isEnabled())
+//                    .authorities(user.getAuthorities()).build();
+//        }
+//        return null;
+//    }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 public class FileService {
-    private static final String PATH = "src/main/resources/templates/";
+    private static final String PATH = "files/xls/";
 
     public String writeExcelFile(List<TransactionResponseDto> list) {
         Workbook workbook = new XSSFWorkbook();
@@ -51,7 +51,7 @@ public class FileService {
         String fileName = list.get(0).getName() + ".xlsx";
         String fileLocation = PATH + fileName;
 
-        FileOutputStream outputStream = null;
+        FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(fileLocation);
             workbook.write(outputStream);

@@ -22,13 +22,12 @@ import java.util.List;
 public class UserEntity extends BaseEntity implements UserDetails {
     private String name;
     @Column(unique = true)
-    @NotBlank(message = "Username cannot be null or whitespace")
     private String username;
-    @NotBlank(message = "Password cannot be null or whitespace")
     private String password;
     private String photoUrl;
     @OneToOne
     private BalanceEntity myBalance;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userEntity")
     private List<NoteEntity> myNotes;
     @JsonIgnore()

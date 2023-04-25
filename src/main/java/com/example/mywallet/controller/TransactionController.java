@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transaction/")
-@SecurityRequirement(name = "My walled")
+@SecurityRequirement(name = "My wallet")
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;

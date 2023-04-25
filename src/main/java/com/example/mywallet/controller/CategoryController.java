@@ -23,7 +23,7 @@ public class CategoryController {
         return categoryService.add(categoryRequestDto);
     }
 
-    @PostMapping(value = "upload-img/{id}", consumes = MediaType.IMAGE_JPEG_VALUE)
+    @PostMapping(value = "upload-img/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse uploadPhoto(@PathVariable UUID id, @RequestPart("file") MultipartFile file) {
         return categoryService.uploadImage(id, file);
     }

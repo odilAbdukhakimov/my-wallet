@@ -67,7 +67,8 @@ public class NoteService {
     public ApiResponse getAllNotesOfUser(UserEntity user) {
 //        UserEntity user = userRepository.findById(userId).orElseThrow(() ->
 //                new RecordNotFound("User not found"));
-        List<NoteEntity> myNotes = user.getMyNotes();
+//        List<NoteEntity> myNotes = user.getMyNotes();
+        List<NoteEntity> myNotes = noteRepository.findByUserEntity_Id(user.getId());
         List<NoteResponseDto> list = myNotes.stream().map(NoteResponseDto::from).toList();
         return new ApiResponse(
                 HttpStatus.OK.value(),

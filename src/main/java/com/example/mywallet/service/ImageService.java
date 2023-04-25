@@ -25,7 +25,7 @@ import java.util.UUID;
 public class ImageService {
 
     private final AttachmentRepository attachmentRepository;
-    private static final String PATH_FILE = "src/main/resources/static";
+    private static final String PATH_FILE = "files/img/";
 
     @SneakyThrows
     public String uploadImage(MultipartFile file) {
